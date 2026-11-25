@@ -2,11 +2,11 @@
 """scan_obdeleven.py — scan OBDeleven obfuscated DEX with decoded region map.
 
 Vendor DEX quirks — verified facts (obdeleven 0.34.1/0.36.0/0.37.1/0.107.1,
-2026-11-25/26; scripted dword reads + baksmali 2.5.2 disassembly of ORIGINALS):
+2026-11-25; scripted dword reads + baksmali 2.5.2 disassembly of ORIGINALS):
   * classes*.dex BODY (string data, type ids, method ids, class defs) is BYTE-INTACT
     and baksmali 2.5.2 disassembles the ORIGINAL apk files CLEANLY (readable smali,
     class names, sources, method bodies) — no descrambling step is required for
-    static RE; see README-apks-here.md for the exact command.
+    static RE; see apks/README-apks-here.md (not committed) for the exact command.
   * Header field ORDER and VALUES are standard DEX (magic "dex\\n035/038" verified on
     every copy; file_size/header_size/region size+offsets all correct; checksum slot
     present). Oddities: link_size slot = 0x12345678, map_off slot = 0, endian_tag slot
