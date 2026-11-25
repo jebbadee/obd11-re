@@ -87,7 +87,7 @@ plugged in, ignition ON): which family a given physical unit advertises, whether
 share `fff1`/`fff2` with ASCII on legacy units, device-side reply framing details, extended vendor
 AT set. See `REPORT.md` section 7.
 
-## Old app (FirstGen/Gen1) line + disassembly — 2026-11-26 update
+## Old app (FirstGen/Gen1) line + disassembly — 2026-11-25 update
 
 FirstGen dongles only pair with the old VAG-only app `com.voltasit.obdeleven`
 ("OBDeleven VAG (old)", 0.107.1 on Play); the new `…​.basic` app does not see them.
