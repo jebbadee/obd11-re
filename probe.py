@@ -4,7 +4,8 @@
 Selftest (no hardware):  python3 probe.py --selftest
 Live scan+handshake:     python3 probe.py [--seconds 12] [--mac XX:..] [--mode auto|gen2|gen3]
                          [--send '07 02' | --send-hex 0f2103000022f19004] [--at RV]
-Requires bleak (pip install --target $(python3 -c 'import site;print(site.getsitepackages()[0])') bleak).
+Requires bleak >= 1.0 (pip install bleak). Runs on Linux (BlueZ) and Windows 10/11 (WinRT);
+on Windows use `python probe.py ...` and do not pair the dongle in Settings.
 """
 import argparse, asyncio, binascii, random, struct, sys
 
@@ -163,28 +164,51 @@ def classify(services):
         return "gen3"
     return "unknown"
 
+def norm_mac(s: str) -> str:
+    """Compare addresses ignoring case and separator (Windows tools show AA-BB-.. or AABB..)."""
+    return "".join(c for c in s.lower() if c in "0123456789abcdef")
+
 async def live(args):
     from bleak import BleakClient, BleakScanner
-    print(":: scanning…")
-    devices = await BleakScanner.discover(timeout=args.seconds)
+    print(":: scanning...")
+    try:
+        # return_adv=True: advertised service UUIDs / local name live on AdvertisementData
+        # (BLEDevice has no service_uuids in current bleak, on any OS).
+        found = await BleakScanner.discover(timeout=args.seconds, return_adv=True)
+    except Exception as e:  # WinRT raises OSError/BleakError when the radio is off or absent
+        print(f":: scan failed: {e}")
+        if sys.platform == "win32":
+            print(":: Windows: turn Bluetooth ON (Settings > Bluetooth & devices) and re-run.")
+        return
     picks = []
-    for d in devices:
-        name = (d.name or "").lower()
-        uuids = [u.lower() for u in (d.service_uuids or [])]
-        if args.mac and d.address.lower() != args.mac.lower():
+    for d, adv in found.values():
+        name = (adv.local_name or d.name or "").lower()
+        uuids = [u.lower() for u in (adv.service_uuids or [])]
+        if args.mac and norm_mac(d.address) != norm_mac(args.mac):
             continue
         if (args.mac or any(h in u for u in uuids for h in SERVICE_HINTS)
                 or "obd" in name or "eleven" in name or "voltasit" in name):
-            picks.append(d)
+            picks.append((d, adv))
     if not picks:
         print(":: no OBDeleven-like device found. Plug the dongle in, ignition ON, and re-run.")
-        for d in devices:
-            print(f"   seen: {d.address} {d.name!r} {d.service_uuids}")
+        if sys.platform == "win32":
+            print(":: Windows: do NOT pair the dongle in Settings (no pairing is used); close the")
+            print("   phone app first - the dongle stops advertising while a phone is connected.")
+        for d, adv in found.values():
+            print(f"   seen: {d.address} {adv.local_name or d.name!r} rssi={adv.rssi} {adv.service_uuids}")
         return
-    for d in picks:
-        print(f":: target {d.address} name={d.name!r} advertised={[u for u in (d.service_uuids or [])]}")
-        async with BleakClient(d.address if hasattr(d, "address") else d, timeout=20.0) as c:
-            await probe_client(c, args)
+    for d, adv in picks:
+        print(f":: target {d.address} name={adv.local_name or d.name!r} rssi={adv.rssi} advertised={list(adv.service_uuids or [])}")
+        kwargs = {}
+        if sys.platform == "win32":
+            # Windows caches GATT tables per device; a stale cache hides ffe0/fff0 chars.
+            kwargs["winrt"] = {"use_cached_services": False}
+        # Pass the BLEDevice itself: on Windows a bare address forces a second implicit scan.
+        try:
+            async with BleakClient(d, timeout=20.0, **kwargs) as c:
+                await probe_client(c, args)
+        except Exception as e:  # non-connectable advertiser, out of range, connect timeout
+            print(f":: connect to {d.address} failed: {type(e).__name__}: {e}")
 
 RX = asyncio.Queue()
 
@@ -198,10 +222,14 @@ async def probe_client(client, args):
     mode = args.mode
     tx = rx = None
     def pick(prefixes, prop):
+        want = ("write", "write-without-response") if prop == "write" else ("notify", "indicate")
+        fallback = None
         for u, ch in sorted(chars.items()):
             if any(u.startswith(p) for p in prefixes):
-                return ch
-        return None
+                if any(w in ch.properties for w in want):
+                    return ch
+                fallback = fallback or ch
+        return fallback
     if mode in ("auto", "gen2"):
         tx = tx or pick(("0000fff2", "bef8d6c9"), "write")
         rx = rx or pick(("0000fff1",), "notify")
@@ -233,8 +261,8 @@ async def probe_client(client, args):
 
     async def send(payload, chunk=19, gap=0.02):
         for i in range(0, len(payload), chunk):
-            await client.write_characteristic(tx, payload[i:i + chunk],
-                                              response="write" in tx.properties)
+            await client.write_gatt_char(tx, payload[i:i + chunk],
+                                         response="write" in tx.properties)
             await asyncio.sleep(gap)
 
     if mode == "gen2":
@@ -263,9 +291,7 @@ async def probe_client(client, args):
         framed = frame_binary(inner, scrambled=False)
         print(f":: TX {label} inner={hx(inner)} framed={hx(framed)}")
         await send(framed)
-        raw = b""
-        async def got(b): return len(deframe(b)) > 0
-        raw = await collect(got, args.timeout_s)
+        raw = await collect(lambda b: len(deframe(b)) > 0, args.timeout_s)
         frames = deframe(raw)
         print(f":: RX raw hex={hx(raw)} frames={[hx(f) for f in frames]}")
         for f in frames:
@@ -313,14 +339,22 @@ def main():
     ap.add_argument("--send-hex", default=None, help="raw TX bytes hex (framed-binary for gen3 mode, raw for gen2)")
     ap.add_argument("--timeout-s", type=float, default=8.0, help="response wait per exchange")
     args = ap.parse_args()
+    for stream in (sys.stdout, sys.stderr):   # Windows consoles/pipes default to cp1252/cp437
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError):
+            pass
     if args.selftest:
         sys.exit(selftest())
     try:
         import bleak  # noqa
     except ImportError:
-        print("bleak missing: pip install --target $(python3 -c 'import site;print(site.getsitepackages()[0])') bleak")
+        print("bleak missing: python -m pip install bleak   (Windows: py -m pip install bleak)")
         sys.exit(2)
-    asyncio.run(live(args))
+    try:
+        asyncio.run(live(args))
+    except KeyboardInterrupt:
+        print(":: interrupted")
 
 if __name__ == "__main__":
     main()
