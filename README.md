@@ -23,6 +23,21 @@ python3 probe.py --mode gen2 --send "07 02"     # read VIN on a legacy-family do
 python3 probe.py --mac AA:BB:CC:DD:EE:FF --seconds 8
 ```
 
+### Windows 10/11
+
+Same script, WinRT backend (bleak picks it automatically). Python 3.10+.
+
+```
+py -m venv .venv
+.venv\Scripts\python -m pip install bleak
+.venv\Scripts\python probe.py --selftest
+.venv\Scripts\python probe.py
+```
+
+- Bluetooth ON; do **not** pair the dongle in Windows Settings (the protocol uses no pairing).
+- Close the OBDeleven phone app first: the dongle stops advertising while a phone is connected.
+- `--mac` accepts `AA:BB:CC:DD:EE:FF`, `AA-BB-CC-DD-EE-FF` or `AABBCCDDEEFF`.
+
 ## Protocol in 10 seconds
 
 - BLE only; no pairing/bonding, plaintext GATT; writes chunked to 19 bytes (app never negotiates MTU).
@@ -45,6 +60,8 @@ python3 probe.py --mac AA:BB:CC:DD:EE:FF --seconds 8
 | `probe.py` | bleak driver/probe, selftesting (11 vectors: CRC, SLIP, scramble, protobuf, deframer) |
 | `references/extraction-gen2-kline.log` | working transcript: ASCII dialect + KWP2000/K-line extraction |
 | `references/extraction-gen3-binary.log` | working transcript: Gen3 binary/protobuf + UDS extraction |
+| `docs/LIVE-TEST-2026-11-24.md` | first live hardware test: gen1 classic-BT dongle findings, open questions |
+| `classic/` | Windows classic-Bluetooth (SPP/RFCOMM) pairing + probe scripts for gen1 dongles |
 | `LICENSE` | MIT for `probe.py`; report text dedicated to CC0 (see LICENSE header note) |
 
 ## Reproducing the pipeline (Linux)
@@ -58,6 +75,12 @@ JAVA_HOME=tools/jre17 tools/jadx/bin/jadx -j 4 --no-res --no-debug-info --show-b
 ```
 
 ## Status
+
+**Live test 2026-11-24 (Windows):** the physical dongle is a first-generation **classic Bluetooth**
+(SPP) unit, PIN `1234`, no BLE — so `probe.py` can't see it. Pairing + RFCOMM link work
+(`classic/`), but the unit only echoes byte `0x0F` and ignores every known command. Its gen1
+protocol is still unknown; next step is an Android HCI snoop capture. Full write-up:
+`docs/LIVE-TEST-2026-11-24.md`.
 
 Protocol layers above are code-verified against the app. Live-hardware items still open (dongle
 plugged in, ignition ON): which family a given physical unit advertises, whether binary frames

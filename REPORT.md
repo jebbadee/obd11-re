@@ -27,7 +27,7 @@ A ready probe script (scan→classify→handshake→`AT RV`/health-request) is `
   3. Gen3 protobuf stack — passive-diag ExtCmds + IsoTp/UDS over the framed binary channel (core_communication/commands/{gen3,common}/, usecase/uds, usecase/kwp).
 - `BluetoothDataTransferProviderImpl` (core_communication/providers/a.java, V) implements BOTH ASCII text passthrough (`a(String…, delimiter…)`) and framed binary (`a(byte[], z, z2)` — scramble/CRC/SLIP) — i.e. the newer adapters can carry both dialects on one GATT profile. H: legacy FFF0-style adapters speak dialects 1+2 on FFF1/FFF2; Gen3 adapters speak 2+3 on FFE1. Which vendor HW corresponds to FFF0 vs FFE0 vs bef8d6c9 is UNRESOLVED without a live scan — probe.py classifies empirically.
 - Firmware/update mode: dedicated GATT `0000ffe3`+`0000ffe4`, "boot mode" connect failure strings in v.java:952/1050; firmware write procedure `startFirmwareWriteProcedure` v.java:553-587; `StuckFirmwareException` exists (leBluetoothProvider/a.java:515).
-- Legacy classic-BR/EDR (SPP) transport strings (`createRfcommSocket`) exist in the APK strings dump — H: Gen1 "Classic" dongles are SPP ELM327; on Linux: `sudo rfcomm bind 0 <MAC> 1` then same ASCII dialect over /dev/rfcomm0. UNVERIFIED.
+- Legacy classic-BR/EDR (SPP) transport strings (`createRfcommSocket`) exist in the APK strings dump — H: Gen1 "Classic" dongles are SPP ELM327; on Linux: `sudo rfcomm bind 0 <MAC> 1` then same ASCII dialect over /dev/rfcomm0. **DISPROVEN live 2026-11-24**: a real Gen1 classic unit (SPP, RFCOMM ch 1, PIN 1234, no LE) ignores all ASCII and the §5 frames and only echoes byte `0x0F` — see `docs/LIVE-TEST-2026-11-24.md`.
 
 ## 2. BLE access layer (V, both families)
 
