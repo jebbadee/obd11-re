@@ -86,3 +86,18 @@ Protocol layers above are code-verified against the app. Live-hardware items sti
 plugged in, ignition ON): which family a given physical unit advertises, whether binary frames
 share `fff1`/`fff2` with ASCII on legacy units, device-side reply framing details, extended vendor
 AT set. See `REPORT.md` section 7.
+
+## Old app (FirstGen/Gen1) line + disassembly — 2026-11-26 update
+
+FirstGen dongles only pair with the old VAG-only app `com.voltasit.obdeleven`
+("OBDeleven VAG (old)", 0.107.1 on Play); the new `…​.basic` app does not see them.
+APK snapshots 0.34.1 / 0.36.0 / 0.37.1 (2021, Gen1-era) + 0.107.1 live in
+`~/obd11-re/apks/` (~40 MB each, not committed here). Those vendor dexes defeat
+jadx ("malformed") but baksmali 2.5.2 disassembles them **as-is** when run per-dex —
+recipe, caveats, and mirror-download traps: `REPORT.md` section 11 +
+`references/scan_obdeleven.py` (region-map decoder). Also committed:
+`references/old-app-versions-timeline.md` (all 95 app versions, 2017-06..2026-09,
+with what is actually downloadable) and `references/old-app-dex-token-census.txt`
+(Gen1 traces: Classic/SPP/BluetoothSocket/7E0/714/KWP). Verified in disassembly:
+20 hits on VW tester addresses F1A0/F1A1 across 16,330 classes, plus the
+`utils/bluetooth/` transport classes (GATT 0000ffe1 + CCCD 2902, Classic/SPP).

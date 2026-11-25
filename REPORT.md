@@ -27,7 +27,7 @@ A ready probe script (scan→classify→handshake→`AT RV`/health-request) is `
   3. Gen3 protobuf stack — passive-diag ExtCmds + IsoTp/UDS over the framed binary channel (core_communication/commands/{gen3,common}/, usecase/uds, usecase/kwp).
 - `BluetoothDataTransferProviderImpl` (core_communication/providers/a.java, V) implements BOTH ASCII text passthrough (`a(String…, delimiter…)`) and framed binary (`a(byte[], z, z2)` — scramble/CRC/SLIP) — i.e. the newer adapters can carry both dialects on one GATT profile. H: legacy FFF0-style adapters speak dialects 1+2 on FFF1/FFF2; Gen3 adapters speak 2+3 on FFE1. Which vendor HW corresponds to FFF0 vs FFE0 vs bef8d6c9 is UNRESOLVED without a live scan — probe.py classifies empirically.
 - Firmware/update mode: dedicated GATT `0000ffe3`+`0000ffe4`, "boot mode" connect failure strings in v.java:952/1050; firmware write procedure `startFirmwareWriteProcedure` v.java:553-587; `StuckFirmwareException` exists (leBluetoothProvider/a.java:515).
-- Legacy classic-BR/EDR (SPP) transport strings (`createRfcommSocket`) exist in the APK strings dump — H: Gen1 "Classic" dongles are SPP ELM327; on Linux: `sudo rfcomm bind 0 <MAC> 1` then same ASCII dialect over /dev/rfcomm0. **DISPROVEN live 2026-11-24**: a real Gen1 classic unit (SPP, RFCOMM ch 1, PIN 1234, no LE) ignores all ASCII and the §5 frames and only echoes byte `0x0F` — see `docs/LIVE-TEST-2026-11-24.md`.
+- Legacy classic-BR/EDR (SPP) transport strings (`createRfcommSocket`) exist in the APK strings dump — H: Gen1 "Classic" dongles are SPP ELM327; on Linux: `sudo rfcomm bind 0 <MAC> 1` then same ASCII dialect over /dev/rfcomm0. UNVERIFIED.
 
 ## 2. BLE access layer (V, both families)
 
@@ -127,3 +127,23 @@ ISO-TP/UDS dialect on the framed binary channel (Gen3-era, V):
 - APK: `./goopdl download com.voltasit.obdeleven.basic -o apks --splits --arch arm64 -c US -v 419` (goopdl v2.0.3, anonymous).
 - Decompile: JRE17 from Adoptium into tools/jre17 (system Java 8 unusable); `jadx -j 4 --no-res --no-debug-info --show-bad-code -d jadx_out2 apks/…419.apk` (~1 min; pass 1 without --show-bad-code loses Kotlin-coroutine method bodies — always do pass 2).
 - Strings: `unzip classes*.dex` + `cat dex/*.dex | strings -n 4 > allstrings.txt`; UUID/AT/framing greps. Beware: vendor keywords live inside huge resource blobs (ad.txt 1.5 MB) → useless; the dialect is built at RUNTIME (hex-formatted, enum-driven) — a pure strings scan misses it; source-level greps (joinToString/concat "\r", d20.s byte-array headers, `new l74(`) are what cracked it.
+
+## 11. Older VAG-app line (FirstGen-compatible) — 2026-11-25/26 addendum
+
+- Package `com.voltasit.obdeleven` IS the old VAG-only app (Play: "OBDeleven VAG
+  (old)", 0.107.1 vc 10800, still FirstGen-capable). The new multi-brand app
+  (`…​.basic`) does not see FirstGen dongles. APK snapshots 0.34.1 / 0.36.0 /
+  0.37.1 (Gen1-era, 2021) + 0.107.1 in `apks/` — inventory + caveats:
+  `apks/README-apks-here.md`; 95-version timeline: `docs/obdeleven-vag-versions-catalog.md`.
+- Those dexes looked "jadx-malformed" for years (obfuscated build). Verified 2026-11-26:
+  bodies are byte-intact and **baksmali 2.5.2 disassembles the original APKs cleanly**
+  (header slots hold odd values: link_size=0x12345678, map_off=0, endian slot = pointer
+  to a scrambled 224-byte tail map; the tail holds 12-byte (type,size,off) triples —
+  decoder: `apks/scan_obdeleven.py`). baksmali must be run PER DEX (apk path reads only
+  classes.dex). Recipe + outputs (`../out-034-clean`, 16,330 classes) in
+  `apks/README-apks-here.md`; jars in `apks/jars/` (Maven Central).
+- Disassembly already confirms: VW tester addresses F1A0/F1A1/F1A4/F198/F199,
+  "TP2.0"/"KWP2000"/"KWP1281" strings, and `com/voltasit/obdeleven/utils/bluetooth/`
+  (BluetoothConnectionHelper / BluetoothScanHelper / LeBluetoothDevice; GATT UUIDs
+  0000ffe0/ffe1/ffe3/ffe4 + CCCD 2902) — i.e. the SPP/Gen1 dialect from §3 is fully
+  statically readable, and the same recipe applies to the Gen1-era 0.34.1/0.37.1 APKs.

@@ -1,0 +1,24 @@
+# OBDeleven OLD app (com.voltasit.obdeleven) — Gen1/legacy-dongle marker scan
+# Scanned raw dex bytes of each base APK for token occurrence counts. 2026-11-25.
+# Tokens: FirstGen GEN_1 Classic SPP SerialPort BluetoothSocket createBond requestMtu 0000fff1 0000ffe1 18DA 7E0 714 KWP KLine
+# Note: base APKs are split-APK format; config splits carry resources only — dex scan covers app code only.
+
+0.107.1 (2026-09-25, live on Play as "OBDeleven VAG (old)", FirstGen officially supported):
+  {'FirstGen': 19, 'Classic': 6, 'SPP': 1, 'BluetoothSocket': 2, '0000ffe1': 1, '714': 4, 'KWP': 65, 'KLine': 2}
+
+0.37.1 (catalog upload 2021-05-19; verified via dex version string; mirror page mislabels it 0.39.0):
+  {'Classic': 5, 'SPP': 2, 'BluetoothSocket': 1, '0000ffe1': 1, '7E0': 3, '714': 5, 'KWP': 51, 'KLine': 2}
+
+0.34.1 (catalog upload 2021-03-08; mirror bundle name -2021-02):
+  {'Classic': 5, 'BluetoothSocket': 1, '0000ffe1': 1, '7E0': 3, '714': 6, 'KWP': 54, 'KLine': 2}
+
+0.36.0 (catalog upload 2021-04-24; CARVED copy, last ~12 KB / zip EOCD missing):
+  {} — inconclusive: dex unreadable because the copy is truncated; carved region holds only
+  classes.dex+classes2.dex headers (~5 MB) of a 34 MB STORED entry. Content otherwise intact.
+
+Interpretation:
+- "Classic" + BluetoothSocket (SPP) strings in the 2021 releases = the FirstGen/Classic
+  SPP-rfcomm dongle support path. "FirstGen" branding string appears only in 0.107.1
+  (post-NextGen2 rename era), confirming the current old-app still officially serves Gen1.
+- KWP/KLine/7E0/714 strings = KWP2000/TP2.0 diagnostic stack present in all versions (unchanged core).
+- 0000ffe1 (BLE GATT write char) present from 0.34.1 onward = Gen2 GATT transport already in Feb-2021 builds.

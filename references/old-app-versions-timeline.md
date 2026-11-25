@@ -1,0 +1,105 @@
+# OBDeleven VAG (old) — com.voltasit.obdeleven — version catalog
+
+# Source: apk.gold update-history embedded JSON (apk_id=44239), captured 2026-11-25.
+# apk.gold download LABELS are unreliable (off-by-one vs inner filename); trust inner APK filename / dex strings.
+# Their downloadable archive holds 8 groups only, oldest = 0.33.x era (Feb 2021).
+# Earliest FILE copies found: apk.gold oldest group = 0.33.1 era (Feb 2021).
+# uptodown.com archive only reaches 0.91.0 (2025); its file URLs are JS-resolved (curl gets HTML only).
+# apkmirror = Cloudflare-walled, not probed. 2017-2020 era (0.1 .. 0.9.8.8): metadata only, no free file copy found yet.
+
+# Full archive history (95 versions):
+2017-06-29  0.9.1.5    minAPI=10 target=16 buildAPI=25 size=28.8MB
+2017-07-14  0.9.1.6    minAPI=10 target=16 buildAPI=25 size=28.8MB
+2017-08-07  0.9.2.1    minAPI=10 target=16 buildAPI=25 size=28.8MB
+2017-11-16  0.9.2.2    minAPI=10 target=16 buildAPI=25 size=28.8MB
+2018-04-07  0.9.3.1    minAPI=11 target=16 buildAPI=26 size=31.4MB
+2018-04-30  0.9.3.4    minAPI=11 target=16 buildAPI=27 size=31.3MB
+2018-05-04  0.9.3.5    minAPI=11 target=16 buildAPI=27 size=31.4MB
+2018-05-31  0.9.3.6    minAPI=11 target=16 buildAPI=27 size=31.3MB
+2018-06-16  0.9.3.7    minAPI=11 target=16 buildAPI=27 size=31.3MB
+2018-06-22  0.9.4      minAPI=11 target=16 buildAPI=27 size=31.5MB
+2018-10-11  0.9.7      minAPI=11 target=16 buildAPI=28 size=32.1MB
+2018-11-18  0.9.8.5    minAPI=11 target=16 buildAPI=28 size=24.8MB
+2019-02-08  0.9.8.8    minAPI=11 target=16 buildAPI=28 size=24.9MB
+2019-02-26  0.11.2     minAPI=11 target=16 buildAPI=28 size=25.0MB
+2019-04-08  0.12.1     minAPI=11 target=16 buildAPI=28 size=25.1MB
+2019-12-24  0.17.0     minAPI=11 target=16 buildAPI=28 size=31.0MB
+2019-12-28  0.17.1     minAPI=11 target=16 buildAPI=28 size=31.0MB
+2020-01-04  0.17.2     minAPI=11 target=16 buildAPI=28 size=35.9MB
+2020-01-22  0.18.0     minAPI=11 target=16 buildAPI=28 size=31.0MB
+2020-03-01  0.19.0     minAPI=11 target=16 buildAPI=28 size=31.1MB
+2020-04-20  0.20.0     minAPI=11 target=16 buildAPI=28 size=31.2MB
+2020-04-25  0.20.5     minAPI=11 target=16 buildAPI=28 size=31.2MB
+2020-05-07  0.21.1     minAPI=11 target=16 buildAPI=28 size=32.1MB
+2020-05-09  0.21.2     minAPI=11 target=16 buildAPI=28 size=32.8MB
+2020-05-12  0.21.3     minAPI=11 target=16 buildAPI=28 size=32.8MB
+2020-05-21  0.21.4     minAPI=11 target=16 buildAPI=28 size=32.8MB
+2020-05-27  0.22.0     minAPI=12 target=16 buildAPI=29 size=31.9MB
+2020-06-04  0.22.2     minAPI=12 target=16 buildAPI=29 size=31.9MB
+2020-06-13  0.23.1     minAPI=12 target=16 buildAPI=29 size=32.0MB
+2020-06-22  0.23.3     minAPI=12 target=16 buildAPI=29 size=32.0MB
+2020-06-25  0.24.0     minAPI=12 target=16 buildAPI=29 size=31.4MB
+2020-07-07  0.25.1     minAPI=12 target=21 buildAPI=29 size=31.2MB
+2020-07-12  0.25.2     minAPI=12 target=21 buildAPI=29 size=31.3MB
+2020-07-21  0.26.0     minAPI=12 target=21 buildAPI=29 size=31.3MB
+2020-07-25  0.26.1     minAPI=12 target=21 buildAPI=29 size=31.3MB
+2020-08-20  0.27.0     minAPI=12 target=21 buildAPI=29 size=31.3MB
+2020-09-19  0.28.0     minAPI=12 target=21 buildAPI=29 size=33.4MB
+2020-11-10  0.30.1     minAPI=12 target=21 buildAPI=29 size=33.7MB
+2020-11-28  0.31.1     minAPI=12 target=21 buildAPI=29 size=33.8MB
+2020-12-04  0.31.2     minAPI=12 target=21 buildAPI=29 size=33.8MB
+2020-12-24  0.31.3     minAPI=12 target=21 buildAPI=29 size=33.8MB
+2021-01-09  0.32.0     minAPI=12 target=21 buildAPI=29 size=33.8MB
+2021-01-15  0.32.1     minAPI=12 target=21 buildAPI=29 size=33.8MB
+2021-01-23  0.33.0     minAPI=12 target=21 buildAPI=29 size=33.8MB
+2021-02-01  0.33.1     minAPI=12 target=21 buildAPI=29 size=35.5MB
+2021-02-06  0.33.3     minAPI=12 target=21 buildAPI=29 size=34.9MB
+2021-02-06  0.33.4     minAPI=12 target=21 buildAPI=29 size=33.8MB
+2021-02-26  0.34.0     minAPI=12 target=21 buildAPI=29 size=35.6MB
+2021-03-08  0.34.1     minAPI=12 target=21 buildAPI=29 size=35.6MB
+2021-03-23  0.35.0     minAPI=12 target=21 buildAPI=30 size=35.9MB
+2021-04-24  0.36.0     minAPI=12 target=21 buildAPI=30 size=35.9MB
+2021-05-19  0.37.1     minAPI=12 target=21 buildAPI=30 size=36.0MB
+2021-05-31  0.39.0     minAPI=12 target=21 buildAPI=30 size=38.1MB
+2021-06-17  0.40.0     minAPI=12 target=21 buildAPI=30 size=38.4MB
+2021-06-21  0.41.0     minAPI=12 target=21 buildAPI=30 size=38.4MB
+2021-07-01  0.42.0     minAPI=12 target=21 buildAPI=30 size=38.4MB
+2021-08-09  0.43.0     minAPI=12 target=21 buildAPI=30 size=38.4MB
+2021-08-21  0.44.0     minAPI=13 target=21 buildAPI=30 size=38.4MB
+2021-09-15  0.45.0     minAPI=13 target=21 buildAPI=30 size=38.9MB
+2021-10-05  0.45.1     minAPI=13 target=21 buildAPI=30 size=38.9MB
+2021-10-28  0.47.0     minAPI=13 target=21 buildAPI=30 size=39.5MB
+2021-11-02  0.47.1     minAPI=13 target=21 buildAPI=30 size=39.5MB
+2021-11-11  0.48.0     minAPI=15 target=21 buildAPI=31 size=46.0MB
+2021-11-26  0.48.1     minAPI=15 target=21 buildAPI=31 size=46.0MB
+2022-01-28  0.49.0     minAPI=15 target=21 buildAPI=31 size=47.5MB
+2022-02-25  0.49.1     minAPI=15 target=21 buildAPI=31 size=47.7MB
+2022-04-04  0.50.1     minAPI=15 target=21 buildAPI=31 size=48.1MB
+2022-04-13  0.51.0     minAPI=15 target=21 buildAPI=31 size=48.1MB
+2022-05-20  0.53.0     minAPI=15 target=21 buildAPI=31 size=48.1MB
+2022-07-16  0.56.0     minAPI=14 target=23 buildAPI=31 size=46.7MB
+2022-07-31  0.57.0     minAPI=14 target=23 buildAPI=31 size=46.7MB
+2022-08-17  0.58.0     minAPI=14 target=23 buildAPI=31 size=46.7MB
+2022-09-16  0.59.0     minAPI=14 target=23 buildAPI=31 size=47.5MB
+2022-11-02  0.60.0     minAPI=14 target=23 buildAPI=31 size=47.6MB
+2022-12-06  0.61.0     minAPI=14 target=23 buildAPI=31 size=47.6MB
+2023-01-05  0.62.0     minAPI=14 target=23 buildAPI=31 size=47.6MB
+2023-02-10  0.63.0     minAPI=15 target=23 buildAPI=31 size=48.3MB
+2023-03-04  0.64.0     minAPI=15 target=23 buildAPI=31 size=48.4MB
+2023-04-05  0.65.0     minAPI=15 target=23 buildAPI=33 size=48.4MB
+2023-06-07  0.68.0     minAPI=15 target=23 buildAPI=33 size=48.2MB
+2023-07-16  0.69.0     minAPI=15 target=23 buildAPI=33 size=48.2MB
+2023-07-23  0.70.0     minAPI=15 target=23 buildAPI=33 size=48.2MB
+2023-08-14  0.71.0     minAPI=15 target=23 buildAPI=33 size=48.2MB
+2023-10-01  0.72.0     minAPI=16 target=23 buildAPI=33 size=51.2MB
+2023-11-03  0.74.0     minAPI=16 target=23 buildAPI=33 size=51.3MB
+2023-12-09  0.76.0     minAPI=16 target=23 buildAPI=33 size=50.5MB
+2023-12-20  0.77.0     minAPI=16 target=23 buildAPI=33 size=50.5MB
+2024-03-18  0.80.0     minAPI=16 target=23 buildAPI=33 size=51.3MB
+2024-11-12  0.90.0     minAPI=19 target=26 buildAPI=34 size=69.3MB
+2024-11-26  0.91.0     minAPI=19 target=26 buildAPI=34 size=69.3MB
+2024-12-25  0.92.0     minAPI=19 target=26 buildAPI=34 size=69.3MB
+2025-08-30  0.99.0     minAPI=19 target=26 buildAPI=35 size=69.9MB
+2025-11-23  0.102.0    minAPI=19 target=26 buildAPI=35 size=70.6MB
+2026-01-21  0.103.0    minAPI=19 target=26 buildAPI=35 size=70.6MB
+2026-09-25  0.107.1    minAPI=18 target=26 buildAPI=36 size=71.7MB
